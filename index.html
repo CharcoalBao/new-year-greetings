@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>對象專屬新年祝福生成器</title>
+    <style>
+        /* 1. 使用 https://i.imgur.com/mB59vuM.jpeg 作為網站背景圖片 */
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background: url('https://i.imgur.com/mB59vuM.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff3e0;
+            text-align: center;
+            padding: 2rem;
+            margin: 0; /* 讓背景圖片覆蓋整個畫面 */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(211,47,47,0.9); /* 原本 #d32f2f ，增加透明度以免全蓋背景 */
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* 7. 標題文字顏色: #f5ab9c */
+        h1 {
+            color: #f5ab9c;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 8. 副標題文字顏色: #f5ab9c */
+        .subtitle {
+            font-size: 1.4rem;
+            color: #f5ab9c;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* 9. 祝福語生成位置顏色: #f1dbc5
+           10. 祝福語文字顏色：#d61d18
+           11. 祝福語文字粗體 (font-weight: bold) */
+        #blessing {
+            font-size: 1.8rem;
+            margin: 2rem 0;
+            min-height: 100px;
+            padding: 1.5rem;
+            background-color: #f1dbc5;
+            border-radius: 8px;
+            line-height: 1.6;
+            color: #d61d18;
+            font-weight: bold;
+        }
+
+        .category-btns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 2. 按鈕顏色: #ffdfd7
+           3. 按鈕文字顏色: #646161 */
+        .category-btn {
+            background-color: #ffdfd7;
+            color: #646161;
+            border: none;
+            padding: 1rem;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        /* 4. 按下(active)時按鈕顏色: #da5148
+           5. 按鈕文字顏色: #ffffff
+           6. 邊框顏色: #f0c190 */
+        .category-btn.active {
+            background-color: #da5148;
+            color: #ffffff;
+            border: 2px solid #f0c190;
+        }
+
+        .action-btns {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* 11~14. "生成祝福語" 按鈕 */
+        .generate-btn {
+            background-color: #f5c285; /* 常態顏色 */
+            color: #ffffff;           /* 常態文字顏色 */
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* 按下時 */
+        .generate-btn:active {
+            background-color: #d84e33; /* 13. 按下顏色 */
+            color: #ffffff;           /* 14. 按下文字顏色 */
+        }
+
+        /* 15~18. "複製祝福語" 按鈕 */
+        .copy-btn {
+            background-color: #f0c190; /* 常態顏色 */
+            color: #ffffff;            /* 常態文字顏色 */
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* 按下時 */
+        .copy-btn:active {
+            background-color: #d84e33; 
+            color: #ffffff; 
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .subtitle {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+            .category-btns {
+                grid-template-columns: 1fr;
+            }
+            #blessing {
+                font-size: 1.4rem;
+            }
+            .action-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧨 對象專屬新年祝福生成器 🧧</h1>
+        <p class="subtitle">請按對象及場合選擇。祝大家有個和和氣氣、樂也融融既新年！</p>
+
+        <div class="category-btns">
+            <button class="category-btn" data-category="toElder">後輩給長輩</button>
+            <button class="category-btn" data-category="toJunior">長輩給後輩</button>
+            <button class="category-btn" data-category="toColleague">給同事</button>
+            <button class="category-btn" data-category="toChild">給孩子</button>
+            <button class="category-btn" data-category="funny">窩心/搞鬼祝福</button>
+        </div>
+
+        <div id="blessing">請先選擇祝福對象</div>
+        
+        <div class="action-btns">
+            <button class="generate-btn" onclick="generateBlessing()">生成祝福語</button>
+            <button class="copy-btn" onclick="copyBlessing()">複製祝福語</button>
+        </div>
+    </div>
+
+    <script>
+        const blessings = {
+            toElder: [
+                "祝長輩新年快樂，身體健康，事事順利。",
+                "願長輩在新的一年里，心想事成，幸福安康。",
+                "祝長輩新年好，闔家團圓，幸福美滿。",
+                "新年到來，願長輩健康常伴，快樂永駐。",
+                "祝您新一年福如東海，壽比南山，日日笑口常開！",
+                "恭喜發財！闔家平安又團圓，福星高照好事連年～"
+            ],
+            toJunior: [
+                "祝你事事順利又如意，天天開心冇煩惱！",
+                "祝你利事收到手軟，財源滾滾、幸福滿滿，每日都笑口常開！",
+                "祝你不斷超越自己，無論興趣或技能，都能發光發熱，讓我們為你驕傲！",
+                "祝你學業進步，快高長大！",
+                "祝你聰明伶俐，前程似錦！"
+            ],
+            toColleague: [
+                "祝同事新年快樂，日日爆數，準時收工。",
+                "祝同事新年快樂，工作順利，升職加薪。",
+                "祝你工作順利，開會唔頹唔眼瞓！",
+                "祝你業績長紅，月月爆數好生意！",
+                "祝你唔再俾老細捽，日日準時收工！"
+            ],
+            toChild: [
+                "祝寶貝新年快樂，學業進步，笑口常開。",
+                "祝孩子在新的一年里，健康成長，快樂無憂。",
+                "新年到來，祝孩子健康快樂，好運相伴。",
+                "祝親愛的孩子，新年快樂，快樂成長。"
+            ],
+            funny: [
+                "祝你今年早日出Pool，唔使再做電燈膽，閃死隔籬啲單身狗！",
+                "新年快樂！祝你在新的一年里，每一餐都能吃到你最愛的食物，還不會胖！",
+                "祝你新一年，煩惱少少，快樂多多，錢包脹卜卜！",
+                "新一年，願你心想事成，幸福滿瀉，甜到漏油！",
+                "新一年心廣體健食極唔肥，笑到見牙唔見眼!"
+            ]
+        };
+
+        let selectedCategory = null;
+
+        // 初始化分類按鈕
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedCategory = this.dataset.category;
+            });
+        });
+
+        function generateBlessing() {
+            if (!selectedCategory) {
+                alert('🚨 請先選擇祝福對象！');
+                return;
+            }
+            
+            const categoryBlessings = blessings[selectedCategory];
+            const blessing = categoryBlessings[Math.floor(Math.random() * categoryBlessings.length)];
+            document.getElementById('blessing').textContent = blessing;
+        }
+
+        function copyBlessing() {
+            const blessingText = document.getElementById('blessing').textContent;
+            if (blessingText === '請先選擇祝福對象') {
+                alert('⚠️ 請先生成祝福語！');
+                return;
+            }
+            
+            navigator.clipboard.writeText(blessingText)
+                .then(() => alert('✅ 祝福語已複製到剪貼簿！'))
+                .catch(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = blessingText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('✅ 祝福語已複製到剪貼簿！');
+                });
+        }
+    </script>
+</body>
+</html>
+
